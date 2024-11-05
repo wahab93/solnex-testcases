@@ -54,8 +54,7 @@ test('Login, navigate through list, and open Variants tab', async ({ page }) => 
 
   // Step 5: Switch from "Master" to "Variants" by clicking on the "Variants" div
   // locate the element by text and click on it
-  const variantsDiv = page.locator('div:text("Variants")');
-  await variantsDiv.click();
+  await page.locator('div:text("Variants")').click();
   // timer to wait for the page to load
   await page.waitForTimeout(2000);
 

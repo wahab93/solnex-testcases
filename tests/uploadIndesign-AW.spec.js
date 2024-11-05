@@ -12,7 +12,7 @@ test.setTimeout(600000); // 600 seconds for all tests in this file
 const downloadPath = path.join(os.homedir(), 'Downloads');
 
 
-test('Download and Upload CVS at Variatns Table', async ({ page }) => {
+test('Download project from an creative and Upload this to another compaign and make creative', async ({ page }) => {
 
     //step 1: Navigate to the login page
     await page.goto('https://assets.dev.dojo.otomo.io/home/login');

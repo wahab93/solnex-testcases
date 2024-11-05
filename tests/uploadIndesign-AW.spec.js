@@ -4,16 +4,13 @@ const { test, expect } = require('@playwright/test');
 const path = require('path');
 const os = require('os');
 
-
-test.setTimeout(600000); // 600 seconds for all tests in this file
-
+// 600 seconds for all tests in this file
+test.setTimeout(600000);
 
 // set path to the system Downloads directory using builtin os module
 const downloadPath = path.join(os.homedir(), 'Downloads');
 
-
-test('Download project from an creative and Upload this to another compaign and make creative', async ({ page }) => {
-
+test('Download and Upload CVS at Variatns Table', async ({ page }) => {
     //step 1: Navigate to the login page
     await page.goto('https://assets.dev.dojo.otomo.io/home/login');
 
@@ -36,13 +33,13 @@ test('Download project from an creative and Upload this to another compaign and 
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
-    // Step 6: Click on "Syed Hamza-1-19" in the campaign list
+    // Step 6: Click on "Younis Panwar" in the campaign list
     await page.locator('text=Younis Panwar').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
-    // Step 7: Click on "Syed Hamza-1-18" within the expanded accordion
+    // Step 7: Click on "SampleOK2" within the expanded accordion
 
     // await page.locator('text=Circle k').click();
     await page.locator('div.block >> text="SampleOK2"').click();
@@ -54,8 +51,10 @@ test('Download project from an creative and Upload this to another compaign and 
 
     // Set up a download listener
     const [download] = await Promise.all([
-        page.waitForEvent('download'), // Waits for the download event
-        page.getByRole('button', { name: 'DOWNLOAD PROJECT' }).click() // Clicks the download button
+        // Waits for the download event
+        page.waitForEvent('download'),
+        // Clicks the download button
+        page.getByRole('button', { name: 'DOWNLOAD PROJECT' }).click()
     ]);
 
 
@@ -64,19 +63,23 @@ test('Download project from an creative and Upload this to another compaign and 
 
     // check download completes and check for any errors
     try {
-        // by default playwritght Temporary path
+        // by default playwright Temporary path
         const filePath = await download.path();
         console.log(`Downloaded file temporary path: ${filePath}`);
 
         // Move downloaded file to the predefined downloaded path like Downloads folder and rename it to downloadedProject.zip
         const savedFilePath = path.join(downloadPath, 'downloadedProject.zip');
+
         await download.saveAs(savedFilePath);
+
         console.log(`File saved to: ${savedFilePath}`);
+
     } catch (error) {
         console.error('Error saving the downloaded file:', error);
     }
 
-    // Step 9: Switch from "Master" to "client Lsit" by clicking on the "client Name" Breadcrumb
+
+    // Step 9: Switch from "Master" to "client List" by clicking on the "client Name" at Breadcrumb
     await page.locator('div a:has-text("Younis panwar")').click();
 
     // timer to wait for the page to load
@@ -92,20 +95,25 @@ test('Download project from an creative and Upload this to another compaign and 
 
     // there is first dropdown for select the compaign name
     const compaignNameDropdown = page.locator('select#campaignName');
+
     // select the compaign name
     await compaignNameDropdown.selectOption('wahab campaign');
+
     // then there is creative name input field
     const creativeNameInput = page.locator('input#creativeName');
+
     // fill the input field with the creative name
-    // your creative name
     let creativeName = 'Abdulwahab creative test';
+
     // fill the input field with the creative job number
-    await creativeNameInput.fill('Abdulwahab creative test');
+    await creativeNameInput.fill(creativeName);
 
     // then there is creative job number input field
     const creativeJobNumberInput = page.locator('input#jobNumber');
+
     // fill the input field with the creative job number
     await creativeJobNumberInput.fill('Abdulwahab creative job number test');
+
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
@@ -125,6 +133,8 @@ test('Download project from an creative and Upload this to another compaign and 
     await page.getByRole('button', { name: 'UPLOAD' }).click();
 
     // if the creative name is already exist then it will show the error message
+
+    // Wait for a potential error message
     const errorMessage = page.locator('text="Creative name already exists in this campaign."');
 
     if (await errorMessage.isVisible()) {
@@ -151,9 +161,10 @@ test('Download project from an creative and Upload this to another compaign and 
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
-    // Step 16: Switch from "Master" to "Variants" by clicking on the "Variants" div
+    // Step 16: click on master tab 
     await page.locator('div:text("MASTERS")').click();
 
     // Step 17: Check if the file has been processed successfully
     await page.waitForSelector('text=Creative Setup', { state: 'hidden' });
+
 });

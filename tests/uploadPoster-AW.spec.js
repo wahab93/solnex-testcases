@@ -4,9 +4,8 @@ const { test, expect } = require('@playwright/test');
 const path = require('path');
 const os = require('os');
 
-
-test.setTimeout(60000); // 60 seconds for all tests in this file
-
+// 60 seconds for all tests in this file
+test.setTimeout(60000);
 
 // set path to the system Downloads directory using builtin os module
 const downloadPath = path.join(os.homedir(), 'Downloads');
@@ -56,21 +55,16 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
 
     if (await page.locator('text="Document Features"').isVisible()) {
         // step 9: a model pop up will appear Document Features, click on "checkbox" and then next button
-
         await expect(page.locator('text="Document Features"')).toBeVisible();
 
-        console.log('found document features');
-
+        // click on the checkbox which should be all
         await page.locator('[role="checkbox"][aria-checked="false"]').click();
 
-        console.log('span clicked');
-
+        // click on the next button
         await page.getByRole('button', { name: 'Next' }).click();
-
-        console.log('next button clicked');
     }
 
-
+    // wait for the processing to be done and model hide
     await page.waitForSelector('text=Processing', { state: 'hidden' });
 
     // wait for the page to load
@@ -79,30 +73,34 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
     // step 10: Click on "add variant" to add variant
     await page.getByRole('button', { name: 'ADD VARIANT' }).click();
 
+    // timer to wait for the page to load
     await page.waitForTimeout(2000);
-
 
     // check if the model pop up is displayed
     await expect(page.locator('text="Add New Variants"')).toBeVisible();
 
     // sstep 11: check the checkbox and click on submit button
     await page.locator('input[type="checkbox"][value="Poster_tagged_24x40_inches_24x40_inches_24x40_inches.idml"]').click();
+    
     // click on the submit button
     await page.getByRole('button', { name: 'Submit' }).click();
 
     // timer to wait for the page to load
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(2000);
 
     // now after add variant it will show the in the table row named variant-row which is last of the list
     // now we change the price of the variant
 
     // step 12: click on the variant row
-    // Select the last variant row and target the textarea within the price cell (assuming it’s the third cell)
+    // Select the last variant row and target the textarea within the price cell (assuming it’s the 11th cell)
     await page.locator('tr.variant-row:last-child td:nth-child(11) textarea').fill('$100');
 
     // change the expirt date of the variant
     const expirationTextarea = await page.locator('tr.variant-row:last-child td:nth-child(17) textarea');
     await expirationTextarea.fill('SINGLE AT REGULAR RETAIL, $10.12 - expires 31/12/2026');
+
+    // click on the save and render button
+    await page.getByRole('button', { name: 'Save & Render' }).click();
 
     // // get the input value from the textarea
     // let content = await expirationTextarea.inputValue();
@@ -127,27 +125,29 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
-
     // step 16: now a model pop up Download Unit in which we should select the download option
     await expect(page.locator('text="Download Unit"')).toBeVisible();
 
-    // select the download option
+    // select the download option use nth for specific select because there are multiple select options
     await page.locator('select').nth(1).selectOption({ value: 'idml' });
 
 
     // step 17: now click on the Download button
     // Set up a download listener
     const [download] = await Promise.all([
+        
         // Waits for the download event
         page.waitForEvent('download'),
+
+        // Click on the button with specific text using exact: true
         page.getByText('DOWNLOAD', { exact: true }).click(),
-        // page.getByRole('button', { name: 'DOWNLOAD' }).click();
     ]);
 
 
     // Confirm that download started
     console.log('Download started...');
 
+    //  this is for the editior number which should be change when we do the next download
     const editorNumber = 1;
     // check download completes and check for any errors
     try {
@@ -156,9 +156,9 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
         console.log(`Downloaded file temporary path: ${filePath}`);
 
         // Move downloaded file to the predefined downloaded path like Downloads folder and rename it.
-        // Change this to 2, 3
-        const savedFilePath = path.join(downloadPath, `Poster_tagged_editor_${editorNumber}_24x40_inches.idml`);
+        const savedFilePath = path.join(downloadPath, `Poster_tagged_editor_${editorNumber}.idml`);
 
+        //  wait for the download to complete and save it to the predefined path and with the new name with editior number
         await download.saveAs(savedFilePath);
 
         console.log(`File saved to: ${savedFilePath}`);
@@ -168,7 +168,7 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
     }
 
     // timer to wait for the page to load
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(2000);
 
     // step 18: now click on the Master Tab to swtich from the variant to the master
     await page.locator('div:text("Master")').click();
@@ -189,6 +189,6 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
     await fileChooser.setFiles(filePath);
 
     // wait for loader icon to disappear
-    await page.waitForTimeout(10000);
+    await page.waitForTimeout(20000);
 
 });

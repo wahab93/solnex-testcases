@@ -1,17 +1,10 @@
-require('dotenv').config();
 const { test, expect } = require('@playwright/test');
 const path = require('path');
-
-
-// Access the environment variables
-const userName = process.env.USER_NAME;
-const password = process.env.PASSWORD;
 
 test.setTimeout(600000); // 600 seconds for all tests in this file
 
 test('Login, navigate through list, and make new compaingn and creative', async ({ page }) => {
   //step 1 login
-  // Navigate to the login page
   await page.goto('https://assets.dev.dojo.otomo.io/home/login');
 
   // Fill in login credentials
@@ -23,61 +16,44 @@ test('Login, navigate through list, and make new compaingn and creative', async 
 
   // Assertion of page title
   await expect(page).toHaveTitle('InDesign Transform');
+
   // timer to wait for the page to load
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
 
   // Step 2: Click on "Freezone Internet" in the list
-  // locate the element by text and click on it
-  const freezoneInternet = page.locator('text=Freezone Internet');
-  await freezoneInternet.click();
+  await page.locator('text=Freezone Internet').click();
 
   // Step 3: Click on "new compaign" button to make new campaig
   await page.getByRole('button', { name: 'NEW CAMPAIGNS' }).click();
-  // timer to wait for the page to load
-  await page.waitForTimeout(5000);
 
+  // timer to wait for the page to load
+  await page.waitForTimeout(2000);
 
   // Step 4: Fill in the form with the required data
-  const compaingnNameInput = page.locator('input#campaignName');
-  // fill the input field with the compaign name
-  await compaingnNameInput.fill('Abdulwahab');
-
+  // define creative name
+  let compaignName = 'Abdulwahab 05-11';
+  
   // Step 5: Fill in the form with the required data
+  await page.locator('input#campaignName').fill(compaignName);
+  await page.locator('input#jobNumber').fill('Abdulwahab optional 05-11');
 
-  // find the input field for the compaign job number optional
-  const CJobNumberInput = page.locator('input#jobNumber');
-  // fill the input field with the compaign job number
-  await CJobNumberInput.fill('Abdulwahab optional test');
-
-  // ge the submit button and click on it
+  // get the submit button and click on it
   await page.getByRole('button', { name: 'SUBMIT' }).click();
 
   // timer to wait for the page to load
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
 
   // Step 6: Click on "new creative" button to make new creative
   await page.getByRole('button', { name: 'NEW CREATIVE' }).click();
 
   // timer to wait for the page to load
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
 
   // Step 7: Fill in the form with the required data
 
-  // there is first dropdown for select the compaign name
-  const compaignNameDropdown = page.locator('select#campaignName');
-  // select the compaign name
-  await compaignNameDropdown.selectOption('Abdulwahab');
-
-  // then there is creative name input field
-  const creativeNameInput = page.locator('input#creativeName');
-
-  // fill the input field with the creative name
-  await creativeNameInput.fill('Abdulwahab name test');
-
-  // then there is creative job number input field
-  const creativeJobNumberInput = page.locator('input#jobNumber');
-  // fill the input field with the creative job number
-  await creativeJobNumberInput.fill('Abdulwahab creative job number test');
+  await page.locator('select#campaignName').selectOption(compaignName);
+  await page.locator('input#creativeName').fill('Abdulwahab creative name 05-11');
+  await page.locator('input#jobNumber').fill('Abdulwahab creative job number 05-11');
 
   // Step 8: Click on "select Zip" button to upload zip file
   const filePath = path.resolve('creativefile', 'Archive.zip');
@@ -93,6 +69,7 @@ test('Login, navigate through list, and make new compaingn and creative', async 
 
   //step 10: click on submit button
   await page.getByRole('button', { name: 'UPLOAD' }).click();
+
   // timer to wait for the page to load
   await page.waitForTimeout(10000);
 
@@ -102,7 +79,18 @@ test('Login, navigate through list, and make new compaingn and creative', async 
   await mastersDiv.click();
 
   // timer to wait for the page to load
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
 
+  // wait for the process to complete and close the new creative modal
+  await page.waitForSelector('text=New Creative', { state: 'hidden' });
 
+  // timer to wait for the page to load
+  await page.waitForTimeout(2000);
+
+  // Step 16: Switch from "Master" to "Variants" by clicking on the "Variants" div
+  await page.locator('div:text("MASTERS")').click();
+
+  // Step 17: Check if the file has been processed successfully
+  // wait for the process to complete
+  await page.waitForSelector('text=Creative Setup', { state: 'hidden' });
 });

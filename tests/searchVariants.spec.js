@@ -1,32 +1,9 @@
-require('dotenv').config();
 const { test, expect } = require('@playwright/test');
-
-// test('login user and password test', async ({ page }) => {
-// // Navigate to the login page
-// await page.goto('https://assets.dev.dojo.otomo.io/home/login');
-
-// // Fill in login credentials
-// await page.fill('input[type="email"]', 'zak@solarnex.com');
-// await page.fill('input[type="password"]', 'wahab123');
-
-//   // Click login button
-//   await page.getByRole('button', {name: 'login'}).click();
-//   // await page.click('button[type="submit"]');
-
-// // Assertion of page title
-// await expect(page).toHaveTitle('InDesign Transform');
-// // timer to wait for the page to load
-// await page.waitForTimeout(5000);
-
-//   // Verify successful login
-//   expect(page.url()).not.toContain('/login');
-// });
 
 test.setTimeout(600000); // 600 seconds for all tests in this file
 
-test('Login, navigate through list, and open Variants tab', async ({ page }) => {
+test('Login, navigate through list, and open Variants tab and search variants', async ({ page }) => {
   //step 1 login
-  // Navigate to the login page
   await page.goto('https://assets.dev.dojo.otomo.io/home/login');
 
   // Fill in login credentials
@@ -44,18 +21,18 @@ test('Login, navigate through list, and open Variants tab', async ({ page }) => 
   // Step 2: Click on "Freezone Internet" in the list
   await page.locator('text=Freezone Internet').click();
 
+  //sttep 3: Click on "wahab campaign" in the campaign list
   await page.locator('text=wahab campaign').click();
 
-  // Step 3: Click on "wahab campaign" in the campaign list
+  // Step 4: Click on "creative"
   await page.locator('div.block >> text="Abdulwahab creative test"').click();
 
   // timer to wait for the page to load
   await page.waitForTimeout(2000);
 
   // Step 5: Switch from "Master" to "Variants" by clicking on the "Variants" div
-  // locate the element by text and click on it
-  const variantsDiv = page.locator('div:text("Variants")');
-  await variantsDiv.click();
+  await page.locator('div:text("Variants")').click();
+  
   // timer to wait for the page to load
   await page.waitForTimeout(2000);
 

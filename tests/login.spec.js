@@ -1,19 +1,13 @@
 require('dotenv').config();
 const { test, expect } = require('@playwright/test');
 
-
-// Access the environment variables
-const baseUrl = process.env.BASE_URL;
-const userName = process.env.USER_NAME;
-const password = process.env.PASSWORD;
-
 // test('login user and password test', async ({ page }) => {
-//   // Navigate to login page
-// await page.goto(baseUrl);
+// // Navigate to the login page
+// await page.goto('https://assets.dev.dojo.otomo.io/home/login');
 
-//   // Fill in login credentials
-// await page.fill('input[type="email"]', userName);
-//   await page.fill('input[type="password"]', password);
+// // Fill in login credentials
+// await page.fill('input[type="email"]', 'zak@solarnex.com');
+// await page.fill('input[type="password"]', 'wahab123');
 
 //   // Click login button
 //   await page.getByRole('button', {name: 'login'}).click();
@@ -33,11 +27,11 @@ test.setTimeout(600000); // 600 seconds for all tests in this file
 test('Login, navigate through list, and open Variants tab', async ({ page }) => {
   //step 1 login
   // Navigate to the login page
-  await page.goto(baseUrl);
+  await page.goto('https://assets.dev.dojo.otomo.io/home/login');
 
   // Fill in login credentials
-  await page.fill('input[type="email"]', userName);
-  await page.fill('input[type="password"]', password);
+  await page.fill('input[type="email"]', 'zak@solarnex.com');
+  await page.fill('input[type="password"]', 'wahab123');
 
   // Click login button
   await page.getByRole('button', { name: 'login' }).click();

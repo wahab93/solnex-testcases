@@ -1,9 +1,9 @@
 // test Case ID: TC_ID_45
 
-// this test case is add variant and change the price and expiry date
+// this test case is for add variant and change the price and expiry date
 // and then download the variant and upload it to masters using upload Indesign button
-// test case goes scene login, client, compaign, creative, variant tab, add variant, download variant, back to master, upload indesign
-// there is also a editorNumber which is used to change the name of the file when we download it
+// test case goes scene login, client, compaign, creative, variant tab, add variant,price and expiry change, download variant, back to master, upload indesign
+// there is also a editorNumber which is used to change the name of the file when we download it.
 
 const { test, expect } = require('@playwright/test');
 const path = require('path');
@@ -41,7 +41,7 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
     await page.waitForTimeout(3000);
 
     // Step 6: Click on "wahab campaign" in the campaign list
-    await page.locator('text=wahab campaign').click();
+    await page.locator('text=Ayat Campaign').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
@@ -49,7 +49,7 @@ test('Download an variant and uplaod it to masters', async ({ page }) => {
     // Step 7: Click on "Syed Hamza-1-18" within the expanded accordion
 
     // await page.locator('Abdulwahab creative test').click();
-    await page.locator('div.block >> text="Abdulwahab creative test 2024-11-04T20-51-07-615Z"').click();
+    await page.locator('div.block >> text="Ayat Test1"').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);

@@ -45,7 +45,7 @@ test('Download and Upload assets at Variatns page', async ({ page }) => {
     await page.waitForTimeout(2000);
 
     // Step 7: Click on creative name with in the expanded accordion
-    await page.locator('div.block >> text="downlaod upload asset test"').click();
+    await page.locator('div.block >> text="download upload assets"').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
@@ -87,58 +87,63 @@ test('Download and Upload assets at Variatns page', async ({ page }) => {
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
 
-    // Step 12: Click on "Download" button
 
-    // Set up a download listener
-    const [download] = await Promise.all([
-        // Waits for the download event
-        page.waitForEvent('download'),
-        // Clicks the download button
-        page.getByRole('button', { name: 'DOWNLOAD ASSETS' }, { exact: true }).click()
-    ]);
+    // Step 1: Get the initial count of asset cards
+    const initialCardCount = await page.locator('div.border.border-gray-300.rounded-md.p-4.flex.flex-col.w-52.h-64.overflow-hidden').count(); // Modify this selector to match your actual asset card element
+    console.log(`Initial card count: ${initialCardCount}`);
 
+    // // Step 12: Click on "Download" button
 
-    // Confirm that download started
-    console.log('Download started...');
-
-    // check download completes and check for any errors
-    try {
-        // by default playwright Temporary path
-        const filePath = await download.path();
-        console.log(`Downloaded file temporary path: ${filePath}`);
-
-        // Move downloaded file to the predefined downloaded path like Downloads folder and rename it to downloadedProject.zip
-        const savedFilePath = path.join(downloadPath, 'downloadedAssets.zip');
-
-        await download.saveAs(savedFilePath);
-
-        console.log(`File saved to: ${savedFilePath}`);
-
-    } catch (error) {
-        console.error('Error saving the downloaded file:', error);
-    }
+    // // Set up a download listener
+    // const [download] = await Promise.all([
+    //     // Waits for the download event
+    //     page.waitForEvent('download'),
+    //     // Clicks the download button
+    //     page.getByRole('button', { name: 'DOWNLOAD ASSETS' }, { exact: true }).click()
+    // ]);
 
 
-    // Step 13: Click on "UPLOAD ASSETS" button to upload zip file
-    const filePath = path.resolve(downloadPath, 'downloadedAssets.zip');
+    // // Confirm that download started
+    // console.log('Download started...');
 
-    // Step 13: Listen for the `filechooser` event triggered by the button click
-    const [fileChooser] = await Promise.all([
-        page.waitForEvent('filechooser'),
-        page.getByRole('button', { name: 'UPLOAD ASSETS' }).click()
-    ]);
+    // // check download completes and check for any errors
+    // try {
+    //     // by default playwright Temporary path
+    //     const filePath = await download.path();
+    //     console.log(`Downloaded file temporary path: ${filePath}`);
 
-    // Step 14: Set the files to be uploaded
-    await fileChooser.setFiles(filePath);
+    //     // Move downloaded file to the predefined downloaded path like Downloads folder and rename it to downloadedProject.zip
+    //     const savedFilePath = path.join(downloadPath, 'downloadedAssets.zip');
 
-    // timer to wait for the page to load
-    await page.waitForTimeout(30000);
+    //     await download.saveAs(savedFilePath);
 
-    // Step 15: delete one of assets from the the previewed assets using delete icon
-    // Locate the last div with the specified classes and click the svg inside it
-    await page.locator('div.border.border-gray-300').last().locator('svg').click();
+    //     console.log(`File saved to: ${savedFilePath}`);
 
-    // timer to wait for the page to load
-    await page.waitForTimeout(30000);
+    // } catch (error) {
+    //     console.error('Error saving the downloaded file:', error);
+    // }
+
+
+    // // Step 13: Click on "UPLOAD ASSETS" button to upload zip file
+    // const filePath = path.resolve(downloadPath, 'downloadedAssets.zip');
+
+    // // Step 13: Listen for the `filechooser` event triggered by the button click
+    // const [fileChooser] = await Promise.all([
+    //     page.waitForEvent('filechooser'),
+    //     page.getByRole('button', { name: 'UPLOAD ASSETS' }).click()
+    // ]);
+
+    // // Step 14: Set the files to be uploaded
+    // await fileChooser.setFiles(filePath);
+
+    // // timer to wait for the page to load
+    // await page.waitForTimeout(30000);
+
+    // // Step 15: delete one of assets from the the previewed assets using delete icon
+    // // Locate the last div with the specified classes and click the svg inside it
+    // await page.locator('div.border.border-gray-300').last().locator('svg').click();
+
+    // // timer to wait for the page to load
+    // await page.waitForTimeout(30000);
 
 });

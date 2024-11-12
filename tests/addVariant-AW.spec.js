@@ -1,14 +1,13 @@
-// test Case ID: TC_ID_43
-
-// test for download and upload csv at variants table
-// test case goes scene login, client, compaign, creative, variant tab, download csv and then upload csv.
+// test for add variant
+// test case goes scene login, client, compaign, creative, variant tab, add variant button, 
+// select first variant and submit and check if variant is added using variant name
 
 const { test, expect } = require('@playwright/test');
-const fs = require('fs');
-const path = require('path');
+// 60 seconds for all tests in this file
+test.setTimeout(60000);
 
 
-test('Download and Upload CVS at Variatns Table', async ({ page }) => {
+test('add variant at variants Table', async ({ page }) => {
 
     //step 1: Navigate to the login page
     await page.goto('https://assets.dev.dojo.otomo.io/home/login');
@@ -36,7 +35,7 @@ test('Download and Upload CVS at Variatns Table', async ({ page }) => {
     await page.locator('text=07 Nov').click();
 
     // timer to wait for the page to load
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
     // Step 7: Click on creative name within the expanded accordion
     await page.locator('div.block >> text="download upload assets"').click();
@@ -67,50 +66,32 @@ test('Download and Upload CVS at Variatns Table', async ({ page }) => {
     // wait for the process to complete
     await page.waitForTimeout(3000);
 
-
-    // Step 10: Define the download path and create the folder if it doesn't exist in same directory
-    const downloadPath = path.join(__dirname, './fixtures');
-    if (!fs.existsSync(downloadPath)) {
-        fs.mkdirSync(downloadPath);
-    }
-
-    // Step 11: Click the "Download CSV" button and wait for the download to start
-    const [download] = await Promise.all([
-        // Wait for the download event to trigger
-        page.waitForEvent('download'),
-        // Clicks the download button
-        page.getByRole('button', { name: 'Download CSV' }).click()
-    ]);
-
-
-    // Step 12: Save the downloaded file to path
-    const pathToFile = path.join(downloadPath, 'add_variant.csv');
-    await download.saveAs(pathToFile);
-    console.log('File downloaded as:', pathToFile);
+    // Step 10: Click on the "Add Variant" button
+    await page.getByRole('button', { name: 'Add Variant' }).click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
 
-    // Check if the file exists after saving
-    if (!fs.existsSync(pathToFile)) {
-        throw new Error(`Downloaded file not found at ${pathToFile}`);
-    } else {
-        console.log('File confirmed to exist before upload.');
-    }
+    // check if the model pop up is displayed
+    await expect(page.locator('text="Add New Variants"')).toBeVisible();
+    
+    // get the value of clicked input checkbox using getAttribute('value')
+    const variantName = await page.locator('div.flex.gap-4.items-center.mb-2.w-full.max-w-lg:first-child input[type="checkbox"]').getAttribute('value');
 
-    // Step 13: Upload the downloaded file
-    const [fileChooser] = await Promise.all([
-        page.waitForEvent('filechooser'),
-        page.getByRole('button', { name: 'UPLOAD CSV' }).click()
-    ]);
-    const filePath = path.resolve('fixtures', pathToFile);
+    // step 11: check the checkbox which is first child of the list which have classes this and then in there is checkbox
+    await page.locator('div.flex.gap-4.items-center.mb-2.w-full.max-w-lg:first-child input[type="checkbox"]').click();
 
-    // Step 14: Set the files to be uploaded
-    await fileChooser.setFiles(filePath);
+    // click on the submit button
+    await page.getByRole('button', { name: 'Submit' }).click();
 
-    // wait for the process to complete
-    await page.waitForSelector('text=Please hold while the variants are being created.', { state: 'hidden' });
+    // timer to wait for the page to load
+    await page.waitForTimeout(3000);
+
+    // Wait for the table row containing the new variant’s unique identifier (e.g., variant name)
+    await expect(page.locator(`table tr:last-child:has-text("${variantName}")`)).toBeVisible();
+
+    // timer to wait for the page to load
+    await page.waitForTimeout(3000);
 
 
-    await page.waitForTimeout(5000);
 });

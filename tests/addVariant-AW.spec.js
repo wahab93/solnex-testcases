@@ -26,19 +26,19 @@ test('add variant at variants Table', async ({ page }) => {
     await page.waitForTimeout(3000);
 
     // Step 5: Click on client name in the list
-    await page.locator('text=Freezone Internet').click();
+    await page.locator('text=QA').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
 
     // Step 6: Click on compaign name in the campaign list
-    await page.locator('text=07 Nov').click();
+    await page.locator('text=Automated wahab').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
 
     // Step 7: Click on creative name within the expanded accordion
-    await page.locator('div.block >> text="download upload assets"').click();
+    await page.locator('div.block >> text="limited edition"').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);

@@ -1,9 +1,7 @@
-// test Case ID: TC_ID_49
-
 // this test case is for downloading the asset and uploading at variant tab using asset library button
 // test case goes scene login, client, compaign, creative, variant tab, asset library button, download asset, upload asset and delete one asset
 // pre requirement is to upload the asset in the asset library , first make comapaign and creative and then use this to go.
-
+// i think there should be popup that assets are uploaded successfully so that we can wait for that popup to appear.
 
 const { test, expect } = require('@playwright/test');
 const path = require('path');
@@ -33,19 +31,19 @@ test('Download and Upload assets at Variatns page', async ({ page }) => {
     await page.waitForTimeout(2000);
 
     // Step 5: Click on client name in the list
-    await page.locator('text=Freezone Internet').click();
+    await page.locator('text=QA').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
     // Step 6: Click on compaign name in the campaign list
-    await page.locator('text=07 Nov').click();
+    await page.locator('text=Automated wahab').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(2000);
 
     // Step 7: Click on creative name with in the expanded accordion
-    await page.locator('div.block >> text="download upload assets"').click();
+    await page.locator('div.block >> text="limited edition"').click();
 
     // timer to wait for the page to load
     await page.waitForTimeout(3000);
@@ -72,7 +70,7 @@ test('Download and Upload assets at Variatns page', async ({ page }) => {
     await page.waitForSelector('text=Processing', { state: 'hidden' });
 
     // wait for the process to complete
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(3000);
 
 
     // Step 10: Click on "Asset Library" button
@@ -88,62 +86,62 @@ test('Download and Upload assets at Variatns page', async ({ page }) => {
     await page.waitForTimeout(3000);
 
 
-    // Step 1: Get the initial count of asset cards
-    const initialCardCount = await page.locator('div.border.border-gray-300.rounded-md.p-4.flex.flex-col.w-52.h-64.overflow-hidden').count(); // Modify this selector to match your actual asset card element
-    console.log(`Initial card count: ${initialCardCount}`);
+    // // Step 1: Get the initial count of asset cards
+    // const initialCardCount = await page.locator('div.border.border-gray-300.rounded-md.p-4.flex.flex-col.w-52.h-64.overflow-hidden').count(); // Modify this selector to match your actual asset card element
+    // console.log(`Initial card count: ${initialCardCount}`);
 
-    // // Step 12: Click on "Download" button
+    // Step 12: Click on "Download" button
 
-    // // Set up a download listener
-    // const [download] = await Promise.all([
-    //     // Waits for the download event
-    //     page.waitForEvent('download'),
-    //     // Clicks the download button
-    //     page.getByRole('button', { name: 'DOWNLOAD ASSETS' }, { exact: true }).click()
-    // ]);
-
-
-    // // Confirm that download started
-    // console.log('Download started...');
-
-    // // check download completes and check for any errors
-    // try {
-    //     // by default playwright Temporary path
-    //     const filePath = await download.path();
-    //     console.log(`Downloaded file temporary path: ${filePath}`);
-
-    //     // Move downloaded file to the predefined downloaded path like Downloads folder and rename it to downloadedProject.zip
-    //     const savedFilePath = path.join(downloadPath, 'downloadedAssets.zip');
-
-    //     await download.saveAs(savedFilePath);
-
-    //     console.log(`File saved to: ${savedFilePath}`);
-
-    // } catch (error) {
-    //     console.error('Error saving the downloaded file:', error);
-    // }
+    // Set up a download listener
+    const [download] = await Promise.all([
+        // Waits for the download event
+        page.waitForEvent('download'),
+        // Clicks the download button
+        page.getByRole('button', { name: 'DOWNLOAD ASSETS' }, { exact: true }).click()
+    ]);
 
 
-    // // Step 13: Click on "UPLOAD ASSETS" button to upload zip file
-    // const filePath = path.resolve(downloadPath, 'downloadedAssets.zip');
+    // Confirm that download started
+    console.log('Download started...');
 
-    // // Step 13: Listen for the `filechooser` event triggered by the button click
-    // const [fileChooser] = await Promise.all([
-    //     page.waitForEvent('filechooser'),
-    //     page.getByRole('button', { name: 'UPLOAD ASSETS' }).click()
-    // ]);
+    // check download completes and check for any errors
+    try {
+        // by default playwright Temporary path
+        const filePath = await download.path();
+        console.log(`Downloaded file temporary path: ${filePath}`);
 
-    // // Step 14: Set the files to be uploaded
-    // await fileChooser.setFiles(filePath);
+        // Move downloaded file to the predefined downloaded path like Downloads folder and rename it to downloadedProject.zip
+        const savedFilePath = path.join(downloadPath, 'downloadedAssets.zip');
 
-    // // timer to wait for the page to load
-    // await page.waitForTimeout(30000);
+        await download.saveAs(savedFilePath);
+
+        console.log(`File saved to: ${savedFilePath}`);
+
+    } catch (error) {
+        console.error('Error saving the downloaded file:', error);
+    }
+
+
+    // Step 13: Click on "UPLOAD ASSETS" button to upload zip file
+    const filePath = path.resolve(downloadPath, 'downloadedAssets.zip');
+
+    // Step 13: Listen for the `filechooser` event triggered by the button click
+    const [fileChooser] = await Promise.all([
+        page.waitForEvent('filechooser'),
+        page.getByRole('button', { name: 'UPLOAD ASSETS' }).click()
+    ]);
+
+    // Step 14: Set the files to be uploaded
+    await fileChooser.setFiles(filePath);
+
+    // timer to wait for the page to load
+    await page.waitForTimeout(10000);
 
     // // Step 15: delete one of assets from the the previewed assets using delete icon
     // // Locate the last div with the specified classes and click the svg inside it
     // await page.locator('div.border.border-gray-300').last().locator('svg').click();
 
     // // timer to wait for the page to load
-    // await page.waitForTimeout(30000);
+    // await page.waitForTimeout(10000);
 
 });
